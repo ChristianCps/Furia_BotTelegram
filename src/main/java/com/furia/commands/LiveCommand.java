@@ -23,7 +23,7 @@ public class LiveCommand implements Command {
         LiveMatch liveMatch = crawlerService.getLiveMatch();
         logger.debug("Partida ao vivo retornada: {}", liveMatch != null ? liveMatch.getOpponent() : "null");
         if (liveMatch == null) {
-            bot.sendMessage(chatId, "Nenhuma partida ao vivo no momento.");
+            bot.sendMessage(chatId, "Nenhuma partida ao vivo no momento.", false);
             logger.info("Nenhuma partida ao vivo detectada para chatId: {}", chatId);
             return;
         }
@@ -47,9 +47,7 @@ public class LiveCommand implements Command {
         if (!liveMatch.getVetoDetails().isEmpty()) {
             response.append("\nPicks e Bans:\n");
             for (String veto : liveMatch.getVetoDetails()) {
-                // Replace "Sharks" with "FURIA" in veto details
-                String formattedVeto = veto.replace("Sharks", "FURIA");
-                response.append("  - ").append(formattedVeto).append("\n");
+                response.append("  - ").append(veto).append("\n");
             }
         }
 
@@ -67,6 +65,6 @@ public class LiveCommand implements Command {
         // Match link
         response.append("\n📊 Detalhes da partida:\n").append(liveMatch.getMatchLink());
 
-        bot.sendMessage(chatId, response.toString());
+        bot.sendMessage(chatId, response.toString(), true);
     }
 }

@@ -6,6 +6,8 @@ import com.furia.commands.LiveCommand;
 import com.furia.commands.LojaCommand;
 import com.furia.commands.ResultadoCommand;
 import com.furia.commands.TimeCommand;
+import com.furia.commands.ContatoCommand;
+import com.furia.commands.ComandoCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,9 +29,12 @@ public class FuriaBot extends TelegramLongPollingBot {
     private final ResultadoCommand resultadoCommand;
     private final LojaCommand lojaCommand;
     private final LiveCommand liveCommand;
+    private final ContatoCommand contatoCommand;
+    private final ComandoCommands comandoCommands;
 
     public FuriaBot(BotConfig botConfig, TimeCommand timeCommand, JogoCommand jogoCommand,
-                    ResultadoCommand resultadoCommand, LojaCommand lojaCommand, LiveCommand liveCommand) {
+                    ResultadoCommand resultadoCommand, LojaCommand lojaCommand, LiveCommand liveCommand,
+                    ContatoCommand contatoCommand, ComandoCommands comandoCommands) {
         super(botConfig.getBotToken());
         this.botConfig = botConfig;
         this.timeCommand = timeCommand;
@@ -37,6 +42,8 @@ public class FuriaBot extends TelegramLongPollingBot {
         this.resultadoCommand = resultadoCommand;
         this.lojaCommand = lojaCommand;
         this.liveCommand = liveCommand;
+        this.contatoCommand = contatoCommand;
+        this.comandoCommands = comandoCommands;
         logger.info("FuriaBot inicializado com username: {}", botConfig.getBotUsername());
 
         try {
@@ -76,6 +83,26 @@ public class FuriaBot extends TelegramLongPollingBot {
                 command = lojaCommand;
             } else if (messageText.startsWith("/live")) {
                 command = liveCommand;
+            } else if (messageText.startsWith("/contato")) {
+                command = contatoCommand;
+            } else if (messageText.startsWith("/start")) {
+                try {
+                    comandoCommands.executeStart(chatId, this);
+                    return;
+                } catch (Exception e) {
+                    logger.error("Erro ao executar /start para chatId {}: {}", chatId, e.getMessage(), e);
+                    sendMessage(chatId, "Erro ao processar o comando. Tente novamente mais tarde.");
+                    return;
+                }
+            } else if (messageText.startsWith("/help")) {
+                try {
+                    comandoCommands.executeHelp(chatId, this);
+                    return;
+                } catch (Exception e) {
+                    logger.error("Erro ao executar /help para chatId {}: {}", chatId, e.getMessage(), e);
+                    sendMessage(chatId, "Erro ao processar o comando. Tente novamente mais tarde.");
+                    return;
+                }
             }
 
             if (command != null) {
@@ -88,18 +115,19 @@ public class FuriaBot extends TelegramLongPollingBot {
                 }
             } else {
                 logger.warn("Comando não reconhecido: {} para chatId: {}", messageText, chatId);
-                sendMessage(chatId, "Comando não reconhecido. Tente: /time, /jogo, /partida, /resultado, /loja ou /live.");
+                sendMessage(chatId, "Comando não reconhecido. Tente: /start, /help, /time, /jogo, /partida, /resultado, /loja, /live ou /contato.");
             }
         } else {
             logger.warn("Atualização sem mensagem de texto: {}", update);
         }
     }
 
-    public void sendMessage(Long chatId, String text) {
+    public void sendMessage(Long chatId, String text, boolean disableWebPagePreview) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId.toString());
         message.setText(text);
-
+        message.setDisableWebPagePreview(disableWebPagePreview);
+    
         try {
             logger.debug("Enviando mensagem para chatId {}: {}", chatId, text);
             execute(message);
@@ -107,5 +135,9 @@ public class FuriaBot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             logger.error("Erro ao enviar mensagem para chatId {}: {}", chatId, e.getMessage(), e);
         }
+    }
+    
+    public void sendMessage(Long chatId, String text) {
+        sendMessage(chatId, text, false);
     }
 }

@@ -14,6 +14,6 @@ public class LojaCommand implements Command {
     @Override
     public void execute(Long chatId, FuriaBot bot) {
         logger.info("Comando /loja executado para chatId: {}", chatId);
-        bot.sendMessage(chatId, "Loja oficial da FURIA: " + LOJA_URL);
+        bot.sendMessage(chatId, "Loja oficial da FURIA: " + LOJA_URL, true);
     }
 }
