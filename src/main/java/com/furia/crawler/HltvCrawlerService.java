@@ -65,9 +65,9 @@ public class HltvCrawlerService {
     }
 
     public HltvCrawlerService(
-            @Value("${crawler.team.code}") String teamCode,
-            @Value("${crawler.team.name}") String teamName,
-            @Value("${crawler.chromedriver.path}") String chromeDriverPath,
+            @Value("${crawler_team_code}") String teamCode,
+            @Value("${crawler_team_name}") String teamName,
+            @Value("${crawler_chromedriver_path}") String chromeDriverPath,
             @Value("${crawlInterval}") long crawlInterval) {
         this.teamCode = teamCode;
         this.teamName = teamName;
