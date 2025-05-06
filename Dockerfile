@@ -21,7 +21,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Variável de ambiente acessível via @Value("${crawler.chromedriver.path}")
-ENV crawler.chromedriver.path=/opt/chromedriver/chromedriver
+ENV crawler_chromedriver_path=/opt/chromedriver/chromedriver
 
 # Definir diretório da aplicação
 WORKDIR /app
