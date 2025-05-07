@@ -20,9 +20,12 @@ RUN apt-get update && \
     rm google-chrome-stable_current_amd64.deb && \
     # Obter a versão do Chrome instalada
     CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+') && \
-    # Instalar ChromeDriver compatível
-    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}) && \
-    if [ -z "$CHROMEDRIVER_VERSION" ]; then echo "Erro: Não foi possível obter a versão do ChromeDriver"; exit 1; fi && \
+    # Tentar obter a versão do ChromeDriver compatível
+    CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION} | grep -oP '^\d+\.\d+\.\d+\.\d+$' || echo "") && \
+    if [ -z "$CHROMEDRIVER_VERSION" ]; then \
+        echo "Versão do ChromeDriver não encontrada, usando versão fixa compatível"; \
+        CHROMEDRIVER_VERSION="136.0.7103.92"; \
+    fi && \
     wget https://storage.googleapis.com/chrome-for-testing-public/${CHROMEDRIVER_VERSION}/linux64/chromedriver-linux64.zip && \
     unzip chromedriver-linux64.zip && \
     mkdir -p /opt/chromedriver && \
