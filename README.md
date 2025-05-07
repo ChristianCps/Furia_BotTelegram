@@ -1,6 +1,6 @@
 # FURIA Bot
 
-🔗 [Acesse o FURIA Bot no Telegram](https://web.telegram.org/k/#@ChatFuriaCS_bot)    Indisponível no momento. Previsaõa de volta: Dia 07/05/25 às 18:00 hrs.
+🔗 [Acesse o FURIA Bot no Telegram](https://web.telegram.org/k/#@ChatFuriaCS_bot)
 
 O FURIA Bot é uma aplicação desenvolvida em Java com Spring Boot que integra um crawler para coletar informações sobre o time de eSports FURIA no site HLTV.org e um bot do Telegram para interagir com os fãs. O bot fornece informações como escalação do time, próximas partidas, resultados recentes, partidas ao vivo, links para a loja oficial e canais de contato da FURIA.
 
