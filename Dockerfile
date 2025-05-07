@@ -27,15 +27,15 @@ RUN apt-get update && \
     # Verificar versões instaladas
     google-chrome --version && \
     /usr/bin/chromedriver --version && \
+    # Remover apenas ferramentas desnecessárias, sem autoremove
     apt-get remove --purge -y unzip wget curl && \
-    apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Copiar o artefato construído
 COPY --from=builder /app/target/furia-bot-0.0.1-SNAPSHOT.jar /app/furia-bot.jar
 
-# Definir variável de ambiente para o ChromeDriver (opcional, caso seu código use)
+# Definir variável de ambiente para o ChromeDriver
 ENV crawler_chromedriver_path=/usr/bin/chromedriver
 
 # Expor a porta 8080
